@@ -2,7 +2,50 @@
 Self-Driving Car Engineer Nanodegree Program
 
 ---
+A Model Predictive controller are generally intended to represent the behavior of complex dynamical systems.  In this case it was generated to be able to control a car for Udacity simulator. 
+The Number of steps = 10 and the time step is 0.1 (100 milliseconds) this means that MCP was planning 1 second into the future. With this configuration, I got 90 MPH as max speed.  Using 1.5 seconds or higher planning time I got almost the 100MPH but it crashes in some points. And a lower planning time (for instance 0.5 seconds), it didn’t performed well predictions even in straight. For the 0.1 as time step duration it got me a good result (not too spare neither too short).  That is why I elected those values.
+For the polynomial equations was shifted to (0,0) and its heading direction was rotated to zero degrees, in other words the fitter polynomial was in most of the cases horizontal where if it was vertical it would return higher coefficient values.   
+This is the result of the implementation:
+* [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/3x_NpqI1VZ8/0.jpg)](https://www.youtube.com/watch?v=3x_NpqI1VZ8)
 
+The yellow line is being drawn in the simulator represent the fitted polynomial line between the waypoints (it is the reference path). The green line shows each of the connected steps from the MPC output.
+
+* State values:
+ * X  ,y , psi, v , cte, epsi
+*Actuators
+ * Delta, a
+* Update equation
+
+```
+fg[1 + x_start + t] = x1 - (x0 + v0 * CppAD::cos(psi0) * dt);
+fg[1 + y_start + t] = y1 - (y0 + v0 * CppAD::sin(psi0) * dt);
+fg[1 + psi_start + t] = psi1 - (psi0 - v0 * delta0 / Lf * dt);
+fg[1 + v_start + t] = v1 - (v0 + a0 * dt);
+fg[1 + cte_start + t] = cte1 - ((f0 - y0) + (v0 * CppAD::sin(epsi0) * dt));
+fg[1 + epsi_start + t] = epsi1 - ((psi0 - psides0) - v0 * delta0 / Lf * dt);
+
+```
+* The cost function:the constants where were manually tuned like the number of steps and the duration of each step. 
+```
+/ ------------Cost function----------------------
+	// The part of the cost based on the reference state.
+    for (int t = 0; t < N; t++) {
+      fg[0] += 1500*CppAD::pow(vars[cte_start + t] - ref_cte, 2);
+      fg[0] += 1500*CppAD::pow(vars[epsi_start + t] - ref_epsi, 2);
+      fg[0] += CppAD::pow(vars[v_start + t] - ref_v, 2);
+	}
+	// Minimize the use of actuators.
+	for (int t = 0; t < N - 1; t++) {
+      fg[0] += 10*CppAD::pow(vars[delta_start + t], 2);
+      fg[0] += 10*CppAD::pow(vars[a_start + t], 2);
+    }
+	// Minimize the value gap between sequential actuations.
+    for (int t = 0; t < N - 2; t++) {
+      fg[0] += 250*CppAD::pow(vars[delta_start + t + 1] - vars[delta_start + t], 2);
+      fg[0] += 10*CppAD::pow(vars[a_start + t + 1] - vars[a_start + t], 2);
+
+
+```
 ## Dependencies
 
 * cmake >= 3.5
