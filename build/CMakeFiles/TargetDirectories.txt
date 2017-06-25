@@ -1,0 +1,3 @@
+/home/erick/Desktop/CarND-MPC-Project-master7/build/CMakeFiles/edit_cache.dir
+/home/erick/Desktop/CarND-MPC-Project-master7/build/CMakeFiles/rebuild_cache.dir
+/home/erick/Desktop/CarND-MPC-Project-master7/build/CMakeFiles/mpc.dir
