@@ -63,7 +63,7 @@ fg[1 + epsi_start + t] = epsi1 - ((psi0 - psides0) - v0 * delta0 / Lf * dt);
   state << delay_x, delay_y, delay_psi, delay_v, delay_cte, delay_epsi;
 ```
 
-When the angle of the car is 0 (it was centered), then the calculations against 0 are: sin(0) = 0 and cos(0) = 1. This means that the delay_x = v*delay_t*Cos(0) is equal to v*delay_t, the delay_y = v*delay_t*sin(0) is equal 0 (for all this I used the update equation as base).  For delay_v, it is only a vague idea about it, because the throttle is not equal to acceleration and the factor for MPH is diferent than m/s^2 (v + throttle_value*delay_t ) . For the For delay_psi, delay_v , delay_cte  and delay_epsi; they are using the same logic for the mcp update equation.  For instance:
+When the angle of the car is 0 (it was centered), then the calculations against 0 are: sin(0) = 0 and cos(0) = 1. This means that the delay_x = v*delay_t*Cos(0) is equal to v * delay_t, the delay_y = v * delay_t*sin(0) is equal 0 (for all this I used the update equation as base).  For delay_v, it is only a vague idea about it, because the throttle is not equal to acceleration and the factor for MPH is diferent than m/s^2 (v + throttle_value*delay_t ) . For the For delay_psi, delay_v , delay_cte  and delay_epsi; they are using the same logic for the mcp update equation.  For instance:
 * fg[1 + psi_start + t] = psi1 - (psi0 - v0 * delta0 / Lf * dt);
 * delay_psi = -v*steer_value / Lf * delay_t; 
 
